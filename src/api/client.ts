@@ -3,6 +3,24 @@ export const API_BASE_URL =
 
 const TOKEN_KEY = 'khwwc_jwt_token';
 const USER_KEY = 'khwwc_user';
+const DEMO_MODE_KEY = 'khwwc_demo_mode';
+
+export function getDemoMode(): boolean {
+  try {
+    const stored = localStorage.getItem(DEMO_MODE_KEY);
+    return stored === null ? true : stored === 'true';
+  } catch {
+    return true;
+  }
+}
+
+export function setDemoMode(enabled: boolean): void {
+  try {
+    localStorage.setItem(DEMO_MODE_KEY, String(enabled));
+  } catch {
+    /* ignore */
+  }
+}
 
 export function getToken(): string | null {
   try {

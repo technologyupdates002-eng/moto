@@ -8,7 +8,7 @@ import {
   ClipboardList, BadgeCheck, Globe, FileEdit, Inbox, Image, Mail,
   SlidersHorizontal, BarChart3, RefreshCw, Scale, Activity, Database,
   Server, Search, Wrench, ScrollText, Shield, Key, Lock, LogIn,
-  Home, X, ChevronDown, LogOut, UserCog, Heart, Menu,
+  Home, X, ChevronDown, LogOut, UserCog, Heart, Menu, FlaskConical, Cloud, ToggleLeft, ToggleRight,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth, roleLabels, roleDashboardPath } from '@/auth/AuthContext';
@@ -34,7 +34,7 @@ function NavIcon({ name, size = 18, className }: { name: string; size?: number; 
 }
 
 export function AppLayout({ children }: { children?: ReactNode }) {
-  const { user, logout, switchRole } = useAuth();
+  const { user, logout, switchRole, demoMode, setDemoMode } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -55,6 +55,11 @@ export function AppLayout({ children }: { children?: ReactNode }) {
     switchRole(newRole);
     setRoleMenuOpen(false);
     navigate(roleDashboardPath[newRole]);
+  };
+
+  const handleModeToggle = () => {
+    setDemoMode(!demoMode);
+    navigate('/login');
   };
 
   const isActive = (path: string) => {
@@ -139,6 +144,13 @@ export function AppLayout({ children }: { children?: ReactNode }) {
               </div>
             )}
           </div>
+          <button onClick={handleModeToggle} className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg text-sm text-neutral-400 hover:bg-white/5 hover:text-white transition-colors">
+            <span className="flex items-center gap-2">
+              {demoMode ? <FlaskConical size={16} /> : <Cloud size={16} />}
+              <span>{demoMode ? 'Demo mode' : 'Production mode'}</span>
+            </span>
+            {demoMode ? <ToggleRight size={18} className="text-primary-400" /> : <ToggleLeft size={18} />}
+          </button>
           <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-error-400 hover:bg-error-500/10 transition-colors">
             <LogOut size={16} />
             <span>Sign Out</span>
@@ -210,6 +222,13 @@ export function AppLayout({ children }: { children?: ReactNode }) {
                   ))}
                 </div>
               </div>
+              <button onClick={handleModeToggle} className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg text-sm text-neutral-400 hover:bg-white/5 hover:text-white">
+                <span className="flex items-center gap-2">
+                  {demoMode ? <FlaskConical size={16} /> : <Cloud size={16} />}
+                  <span>{demoMode ? 'Demo mode' : 'Production mode'}</span>
+                </span>
+                {demoMode ? <ToggleRight size={18} className="text-primary-400" /> : <ToggleLeft size={18} />}
+              </button>
               <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-error-400 hover:bg-error-500/10">
                 <LogOut size={16} />
                 <span>Sign Out</span>

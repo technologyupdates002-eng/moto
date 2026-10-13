@@ -2,8 +2,12 @@ import {
   createContext, useContext, useState, useEffect, useCallback,
   type ReactNode,
 } from 'react';
-import { clearToken, setToken, setStoredUser, getStoredUser } from '@/api/client';
+import {
+  clearToken, setToken, setStoredUser, getStoredUser,
+  getDemoMode, setDemoMode as persistDemoMode,
+} from '@/api/client';
 import { authApi } from '@/api/auth';
+import { mockAuth } from '@/api/mock';
 import type { AuthUser, UserRole } from '@/types';
 
 interface AuthContextValue {
@@ -13,6 +17,8 @@ interface AuthContextValue {
   logout: () => void;
   switchRole: (role: UserRole) => void;
   updatePassword: (current: string, next: string) => Promise<void>;
+  demoMode: boolean;
+  setDemoMode: (enabled: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -20,6 +26,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [demoMode, setDemoModeState] = useState(getDemoMode);
 
   useEffect(() => {
     const stored = getStoredUser<AuthUser>();
@@ -30,12 +37,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string): Promise<AuthUser> => {
-    const result = await authApi.login({ email, password });
+    const result = demoMode
+      ? await mockAuth.login(email, password)
+      : await authApi.login({ email, password });
     setToken(result.token);
     setStoredUser(result.user);
     setUser(result.user);
     return result.user;
-  }, []);
+  }, [demoMode]);
 
   const logout = useCallback(() => {
     clearToken();
@@ -43,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const switchRole = useCallback((role: UserRole) => {
+    if (!demoMode || !user) return;
     const updated: AuthUser = {
       ...user!,
       role,
@@ -65,23 +75,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
     setStoredUser(updated);
     setUser(updated);
-  }, [user]);
+  }, [demoMode, user]);
 
   const updatePassword = useCallback(async (current: string, next: string) => {
-    await authApi.changePassword({
-      current_password: current,
-      new_password: next,
-      new_password_confirmation: next,
-    });
+    if (!demoMode) {
+      await authApi.changePassword({
+        current_password: current,
+        new_password: next,
+        new_password_confirmation: next,
+      });
+    }
     if (user) {
       const updated = { ...user, must_change_password: false };
       setStoredUser(updated);
       setUser(updated);
     }
-  }, [user]);
+  }, [demoMode, user]);
+
+  const changeDemoMode = useCallback((enabled: boolean) => {
+    persistDemoMode(enabled);
+    setDemoModeState(enabled);
+    clearToken();
+    setUser(null);
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, switchRole, updatePassword }}>
+    <AuthContext.Provider value={{
+      user, loading, login, logout, switchRole, updatePassword,
+      demoMode, setDemoMode: changeDemoMode,
+    }}>
       {children}
     </AuthContext.Provider>
   );

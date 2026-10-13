@@ -1,4 +1,5 @@
 import { authApi } from './auth';
+import { getDemoMode } from './client';
 import { publicApi } from './public';
 import { memberApi } from './member';
 import { treasurerApi, adminApi } from './admin';
@@ -40,8 +41,14 @@ function delay(ms = 200): Promise<void> {
 
 async function tryApi<T>(
   apiCall: () => Promise<T>,
-  _fallback: T | (() => T | Promise<T>),
+  fallback: T | (() => T | Promise<T>),
 ): Promise<T> {
+  if (getDemoMode()) {
+    await delay();
+    return typeof fallback === 'function'
+      ? await (fallback as () => T | Promise<T>)()
+      : fallback;
+  }
   return apiCall();
 }
 

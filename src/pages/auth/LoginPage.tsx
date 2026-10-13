@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Heart, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
+import { Heart, Mail, Lock, AlertCircle, ArrowRight, FlaskConical, Cloud } from 'lucide-react';
 import { useAuth } from '@/auth/AuthContext';
 import { Button } from '@/components/ui';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, demoMode, setDemoMode } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -95,8 +95,21 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Welcome back</h2>
-          <p className="mt-1 text-sm text-neutral-500">Sign in to access your account</p>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Welcome back</h2>
+              <p className="mt-1 text-sm text-neutral-500">Sign in to access your account</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setDemoMode(!demoMode)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-50 px-2.5 py-2 text-xs font-medium text-neutral-600 transition-colors hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700"
+              title={demoMode ? 'Switch to production mode' : 'Switch to demo mode'}
+            >
+              {demoMode ? <FlaskConical size={14} /> : <Cloud size={14} />}
+              {demoMode ? 'Demo' : 'Production'}
+            </button>
+          </div>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             {error && (
@@ -146,7 +159,7 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 p-4 rounded-lg bg-neutral-50 border border-neutral-100">
+          {demoMode && <div className="mt-6 p-4 rounded-lg bg-neutral-50 border border-neutral-100">
             <p className="text-xs font-medium text-neutral-500 mb-2.5">Demo accounts (any password works):</p>
             <div className="grid grid-cols-2 gap-1.5">
               {demoAccounts.map(acc => (
@@ -160,7 +173,13 @@ export default function LoginPage() {
                 </button>
               ))}
             </div>
-          </div>
+          </div>}
+
+          {!demoMode && (
+            <p className="mt-6 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2.5 text-center text-xs text-blue-700">
+              Production mode uses your live account and live records.
+            </p>
+          )}
 
           <p className="mt-6 text-center text-xs text-neutral-400">
             <Link to="/" className="hover:text-neutral-600">← Back to website</Link>
