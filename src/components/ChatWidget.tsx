@@ -72,17 +72,17 @@ export function ChatWidget() {
   const loadConversations = useCallback(async () => {
     if (!user) return;
     try {
-      const convs = await fetchConversations(user.id);
+      const convs = await fetchConversations(user.id, contextType);
       setConversations(convs);
     } catch {
       /* ignore — history is non-critical */
     }
-  }, [user]);
+  }, [contextType, user]);
 
   const loadMessages = useCallback(async (convId: string) => {
     setLoadingHistory(true);
     try {
-      const msgs = await fetchMessages(convId);
+      const msgs = await fetchMessages(convId, contextType);
       setMessages(msgs.map((m: ChatMessage) => ({
         id: m.id,
         role: m.role,
@@ -96,7 +96,7 @@ export function ChatWidget() {
     } finally {
       setLoadingHistory(false);
     }
-  }, []);
+  }, [contextType]);
 
   useEffect(() => {
     if (open) loadConversations();
