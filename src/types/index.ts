@@ -446,6 +446,61 @@ export interface ChatMessage {
   created_at: string;
 }
 
+export interface GroupConversation {
+  id: string;
+  name: string | null;
+  type: 'group' | 'direct';
+  avatar_url: string | null;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  participants?: GroupParticipant[];
+  last_message?: GroupMessage | null;
+  unread_count?: number;
+}
+
+export interface GroupParticipant {
+  id: string;
+  conversation_id: string;
+  user_id: string;
+  user_name: string;
+  user_avatar: string | null;
+  role: 'admin' | 'member';
+  last_read_at: string | null;
+  joined_at: string;
+  is_typing?: boolean;
+}
+
+export interface GroupMessage {
+  id: string;
+  conversation_id: string;
+  user_id: string;
+  user_name: string;
+  user_avatar: string | null;
+  content: string;
+  reply_to_id: string | null;
+  reply_to?: GroupMessage | null;
+  mentions: string[];
+  created_at: string;
+  reactions?: GroupReaction[];
+}
+
+export interface GroupReaction {
+  id: string;
+  message_id: string;
+  user_id: string;
+  emoji: string;
+  created_at: string;
+}
+
+export interface ChatTypingUser {
+  id: string;
+  conversation_id: string;
+  user_id: string;
+  user_name: string;
+  updated_at: string;
+}
+
 export interface OrganizationSettings {
   id: string;
   organization_name: string;

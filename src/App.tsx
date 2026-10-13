@@ -10,6 +10,9 @@ import { PublicLayout } from '@/layouts/PublicLayout';
 import LoginPage from '@/pages/auth/LoginPage';
 import ForcePasswordChangePage from '@/pages/auth/ForcePasswordChangePage';
 
+// Chat page
+import ChatPage from '@/pages/member/ChatPage';
+
 // Public pages
 import HomePage from '@/pages/public/HomePage';
 import LeadershipPage from '@/pages/public/LeadershipPage';
@@ -111,6 +114,11 @@ export default function App() {
             {/* Auth */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/force-password-change" element={<ForcePasswordChangePage />} />
+
+            {/* Chat - available to all authenticated users */}
+            <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
+              <Route path="/chat" element={<ChatPage />} />
+            </Route>
 
             {/* Member portal */}
             <Route element={<RequireAuth><AppLayout /></RequireAuth>}>

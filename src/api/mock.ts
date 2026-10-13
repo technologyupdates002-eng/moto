@@ -55,13 +55,11 @@ async function tryApi<T>(
 export const mockAuth = {
   async login(email: string, _password: string): Promise<LoginResponse> {
     await delay(300);
-    const role = email.includes('admin') ? 'admin'
-      : email.includes('treasurer') ? 'treasurer'
-      : email.includes('vice') ? 'vice-secretary'
-      : email.includes('secretary') ? 'secretary'
-      : email.includes('chair') ? 'chairperson'
-      : email.includes('office') ? 'office'
-      : email.includes('super') ? 'super-admin'
+    const role = email.includes('254700000002') ? 'admin'
+      : email.includes('254700000003') ? 'treasurer'
+      : email.includes('254700000004') ? 'secretary'
+      : email.includes('254700000005') ? 'chairperson'
+      : email.includes('254700000006') ? 'super-admin'
       : 'member';
     const user = { ...demoRoleUsers[role], email };
     return { token: 'demo-jwt-token-' + Date.now(), user };

@@ -6,14 +6,14 @@ import {
   clearToken, setToken, setStoredUser, getStoredUser,
   getDemoMode, setDemoMode as persistDemoMode,
 } from '@/api/client';
-import { authApi } from '@/api/auth';
+import { authApi, phoneToSyntheticEmail } from '@/api/auth';
 import { mockAuth } from '@/api/mock';
 import type { AuthUser, UserRole } from '@/types';
 
 interface AuthContextValue {
   user: AuthUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<AuthUser>;
+  login: (phone: string, password: string) => Promise<AuthUser>;
   logout: () => void;
   switchRole: (role: UserRole) => void;
   updatePassword: (current: string, next: string) => Promise<void>;
@@ -36,7 +36,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }, []);
 
-  const login = useCallback(async (email: string, password: string): Promise<AuthUser> => {
+  const login = useCallback(async (phone: string, password: string): Promise<AuthUser> => {
+    const email = phoneToSyntheticEmail(phone);
     const result = demoMode
       ? await mockAuth.login(email, password)
       : await authApi.login({ email, password });

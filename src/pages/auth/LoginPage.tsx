@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Heart, Mail, Lock, AlertCircle, ArrowRight, FlaskConical, Cloud } from 'lucide-react';
+import { Heart, Phone, Lock, AlertCircle, ArrowRight, FlaskConical, Cloud } from 'lucide-react';
 import { useAuth } from '@/auth/AuthContext';
 import { Button } from '@/components/ui';
 
 export default function LoginPage() {
   const { login, demoMode, setDemoMode } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      const user = await login(email, password);
+      const user = await login(phone, password);
       const target = user.role === 'member' ? '/member'
         : user.role === 'admin' ? '/admin'
         : user.role === 'treasurer' ? '/treasurer'
@@ -34,12 +34,12 @@ export default function LoginPage() {
   };
 
   const demoAccounts = [
-    { role: 'Member', email: 'member@khwwc.co.ke' },
-    { role: 'Admin', email: 'admin@khwwc.co.ke' },
-    { role: 'Treasurer', email: 'treasurer@khwwc.co.ke' },
-    { role: 'Secretary', email: 'secretary@khwwc.co.ke' },
-    { role: 'Chairperson', email: 'chairperson@khwwc.co.ke' },
-    { role: 'Super Admin', email: 'superadmin@khwwc.co.ke' },
+    { role: 'Member', phone: '0700 000 001' },
+    { role: 'Admin', phone: '0700 000 002' },
+    { role: 'Treasurer', phone: '0700 000 003' },
+    { role: 'Secretary', phone: '0700 000 004' },
+    { role: 'Chairperson', phone: '0700 000 005' },
+    { role: 'Super Admin', phone: '0700 000 006' },
   ];
 
   return (
@@ -120,17 +120,18 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label className="label">Email Address</label>
+              <label className="label">Phone Number</label>
               <div className="relative">
-                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+                <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
                 <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="you@khwwc.co.ke"
+                  type="tel"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  placeholder="0700 000 000"
                   className="input-field pl-9"
                   required
                   autoFocus
+                  autoComplete="tel"
                 />
               </div>
             </div>
@@ -164,12 +165,12 @@ export default function LoginPage() {
             <div className="grid grid-cols-2 gap-1.5">
               {demoAccounts.map(acc => (
                 <button
-                  key={acc.email}
-                  onClick={() => { setEmail(acc.email); setPassword('demo123'); }}
+                  key={acc.phone}
+                  onClick={() => { setPhone(acc.phone); setPassword('demo123'); }}
                   className="text-left px-2.5 py-1.5 rounded-md text-xs text-neutral-600 hover:bg-white hover:text-neutral-900 transition-colors"
                 >
                   <p className="font-medium">{acc.role}</p>
-                  <p className="text-neutral-400 truncate">{acc.email}</p>
+                  <p className="text-neutral-400 truncate">{acc.phone}</p>
                 </button>
               ))}
             </div>

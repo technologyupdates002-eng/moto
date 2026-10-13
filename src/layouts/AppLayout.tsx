@@ -15,7 +15,7 @@ import { useAuth, roleLabels, roleDashboardPath } from '@/auth/AuthContext';
 import { navConfig, memberBottomNav, type NavItem } from '@/config/nav';
 import { classNames, initials } from '@/lib/format';
 import type { UserRole } from '@/types';
-import { ChatWidget } from '@/components/ChatWidget';
+import { GroupChatWidget } from '@/components/GroupChatWidget';
 
 const iconMap: Record<string, LucideIcon> = {
   LayoutDashboard, Calendar, FileText, Download, Receipt, Newspaper,
@@ -282,8 +282,8 @@ export function AppLayout({ children }: { children?: ReactNode }) {
         )}
       </div>
 
-      {/* AI Assistant Chat Widget */}
-      <ChatWidget />
+      {/* Floating group chat */}
+      <GroupChatWidget />
     </div>
   );
 }
